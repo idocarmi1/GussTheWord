@@ -1,0 +1,88 @@
+import random
+import time
+
+# Define a list of 3-word phrases
+phrases = [['always', 'be', 'yourself'],
+           ['keep', 'it', 'cool'],
+           ['never', 'give', 'up'],
+           ['live', 'love', 'laugh'],
+           ['time', 'flies', 'fast'],
+           ['every', 'day', 'counts'],
+           ['never', 'stop', 'learning'],
+           ['make', 'it', 'happen'],
+           ['follow', 'your', 'dreams'],
+           ['take', 'one', 'step']]
+
+
+def choose_phrase(phrases):
+    # Draw a random number between 0 and the length of the phrases list
+    index = random.randint(0, len(phrases) - 1)
+    # Select a phrase from the list
+    phrase = phrases[index]
+    # Build a list of underscores to represent the letters of the phrase
+    underscores = ['_'] * len(' '.join(phrase))
+    # Return the phrase and the list of underscores
+    return phrase, underscores
+
+
+def guess_letter(phrase, underscores, guess):
+    found = False
+    pos = 0
+    # Check if the guess is in the phrase
+    for i in range(len(phrase)):
+        for j in range(len(phrase[i])):
+            if phrase[i][j] == guess:
+                underscores[pos] = guess
+                found = True
+            pos += 1
+        if pos < len(underscores):
+            underscores[pos] = ','
+        pos += 1
+    # Replace all underscores with the guessed letter in the correct positions
+    # Return the updated list of underscores
+    return underscores, found
+
+
+def play_game():
+    phrase, underscores = choose_phrase(phrases)
+    # Join the underscores list into a string with spaces between the letters
+    display = ' '.join(underscores)
+    # Print the initial display with underscores
+    print(f'phrase = {phrase}')
+    print(display)
+    start_time = time.time()
+    # print(start_time)
+    # Initialize the score to 0
+    score = 0
+    # Loop until the player has guessed all the letters in the phrase
+    while '_' in underscores:
+        # Get a guess from the player
+        guess = input('Guess a letter: ').lower()
+        # Check if the guess is a single letter
+        if len(guess) != 1 or not guess.isalpha():
+            print('Invalid input. Please enter a single letter.')
+            continue
+        # Check if the letter has already been guessed
+        if guess in display:
+            print('You already guessed that letter.')
+            continue
+        # Update the display with the guessed letter in the correct position(s)
+        underscores, correct_guess = guess_letter(phrase, underscores, guess)
+        if correct_guess:
+            print('Correct!')
+            score += 5
+        else:
+            print('Incorrect.')
+            score -= 1
+        display = ' '.join(underscores)
+        print(display)
+    end_time = time.time()
+    # Calculate the time it took to guess the phrase
+    elapsed_time = end_time - start_time
+    print('Congratulations, you guessed the phrase in {:.1f} seconds!'.format(elapsed_time))
+    # Calculate the final score and print it
+    final_score = score + 100 if elapsed_time < 30 else score
+    print('Final score: {}'.format(final_score))
+
+
+play_game()
